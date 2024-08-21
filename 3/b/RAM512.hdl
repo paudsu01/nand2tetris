@@ -1,0 +1,78 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/b/RAM512.hdl
+/**
+ * Memory of 512 16-bit registers.
+ * If load is asserted, the value of the register selected by
+ * address is set to in; Otherwise, the value does not change.
+ * The value of the selected register is emitted by out.
+ */
+CHIP RAM512 {
+    IN in[16], load, address[9];
+    OUT out[16];
+
+    PARTS:
+    
+    Not(in=address[0] , out=na0 );
+    Not(in=address[1] , out=na1 );
+    Not(in=address[2] , out=na2 );
+
+    // Decoder
+    And(a=na0 , b= na1, out=and00 );
+    And(a=na2 , b=load , out=and01 );
+    And(a=and00 , b=and01 , out=load0 );
+
+    And(a=address[0] , b= na1, out=and10 );
+    And(a=na2 , b=load , out=and11 );
+    And(a=and10 , b=and11 , out=load1 );
+    
+    And(a=na0 , b= address[1], out=and20 );
+    And(a=na2 , b=load , out=and21 );
+    And(a=and20 , b=and21 , out=load2 );
+    
+    And(a=address[0] , b= address[1], out=and30 );
+    And(a=na2 , b=load , out=and31 );
+    And(a=and30 , b=and31 , out=load3 );
+
+    And(a=na0 , b=na1, out=and40 );
+    And(a=address[2] , b=load , out=and41 );
+    And(a=and40 , b=and41 , out=load4 );
+
+    And(a=address[0] , b= na1, out=and50 );
+    And(a=address[2] , b=load , out=and51 );
+    And(a=and50 , b=and51 , out=load5 );
+
+    And(a=address[1] , b= na0, out=and60 );
+    And(a=address[2] , b=load , out=and61 );
+    And(a=and60 , b=and61 , out=load6 );
+    
+    And(a=address[1] , b= address[0], out=and70 );
+    And(a=address[2] , b=load , out=and71 );
+    And(a=and70 , b=and71 , out=load7 );
+
+    // 8 RAM64s r0-r7
+    RAM64(in=in[0..15] , load=load0 , address=address[3..8] , out=out0 );
+    RAM64(in=in[0..15] , load=load1 , address=address[3..8] , out=out1 );
+    RAM64(in=in[0..15] , load=load2 , address=address[3..8] , out=out2 );
+    RAM64(in=in[0..15] , load=load3 , address=address[3..8] , out=out3 );
+    RAM64(in=in[0..15] , load=load4 , address=address[3..8] , out=out4 );
+    RAM64(in=in[0..15] , load=load5 , address=address[3..8] , out=out5 );
+    RAM64(in=in[0..15] , load=load6 , address=address[3..8] , out=out6 );
+    RAM64(in=in[0..15] , load=load7 , address=address[3..8] , out=out7 );
+    
+    // Multiplexor for 8-1 selector
+    // level 1
+    Mux16(a=out0 , b=out1 , sel=address[0] , out=out01 );
+    Mux16(a=out2 , b=out3 , sel=address[0] , out=out23 );
+    Mux16(a=out4 , b=out5 , sel=address[0] , out=out45 );
+    Mux16(a=out6 , b=out7 , sel=address[0] , out=out67 );
+    
+    // level 2
+    Mux16(a=out01 , b=out23 , sel=address[1] , out=out0123 );
+    Mux16(a=out45 , b=out67 , sel=address[1] , out=out4567 );
+    
+    // level 3
+    Mux16(a=out0123 , b=out4567 , sel=address[2] , out=out );
+
+}

@@ -1,0 +1,51 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/b/RAM16K.hdl
+/**
+ * Memory of 16K 16-bit registers.
+ * If load is asserted, the value of the register selected by
+ * address is set to in; Otherwise, the value does not change.
+ * The value of the selected register is emitted by out.
+ */
+CHIP RAM16K {
+    IN in[16], load, address[14];
+    OUT out[16];
+
+    PARTS:
+    
+    Not(in=address[0] , out=na0 );
+    Not(in=address[1] , out=na1 );
+  
+    // Decoder
+    And(a=na0 , b=na1, out=and00 );
+    And(a=true , b=load , out=and01 );
+    And(a=and00 , b=and01 , out=load0 );
+
+    And(a=address[0] , b= na1, out=and10 );
+    And(a=true , b=load , out=and11 );
+    And(a=and10 , b=and11 , out=load1 );
+    
+    And(a=na0 , b= address[1], out=and20 );
+    And(a=true , b=load , out=and21 );
+    And(a=and20 , b=and21 , out=load2 );
+    
+    And(a=address[0] , b= address[1], out=and30 );
+    And(a=true , b=load , out=and31 );
+    And(a=and30 , b=and31 , out=load3 );
+    
+    // 4 RAM4Ks r0-r7
+    RAM4K(in=in[0..15] , load=load0 , address=address[2..13] , out=out0 );
+    RAM4K(in=in[0..15] , load=load1 , address=address[2..13] , out=out1 );
+    RAM4K(in=in[0..15] , load=load2 , address=address[2..13] , out=out2 );
+    RAM4K(in=in[0..15] , load=load3 , address=address[2..13] , out=out3 );
+    
+    // Multiplexor for 8-1 selector    
+    // level 1
+    Mux16(a=out0 , b=out1 , sel=address[0] , out=out01 );
+    Mux16(a=out2 , b=out3 , sel=address[0] , out=out23 );
+    
+    // level 2
+    Mux16(a=out01 , b=out23 , sel=address[1] , out=out );
+
+}
