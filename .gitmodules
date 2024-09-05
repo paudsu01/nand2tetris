@@ -1,0 +1,3 @@
+[submodule "6/assembler"]
+	path = 6/assembler
+	url = git@github.com:paudsu01/Nand2TetrisAssembler.git
