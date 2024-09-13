@@ -1,3 +1,6 @@
 [submodule "6/assembler"]
 	path = 6/assembler
 	url = git@github.com:paudsu01/Nand2TetrisAssembler.git
+[submodule "7and8/VMTranslator"]
+	path = 7and8/VMTranslator
+	url = git@github.com:paudsu01/nand2tetrisVMTranslator.git
