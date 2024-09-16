@@ -4,3 +4,6 @@
 [submodule "7and8/VMTranslator"]
 	path = 7and8/VMTranslator
 	url = git@github.com:paudsu01/nand2tetrisVMTranslator.git
+[submodule "9/FlappyBirdInJack"]
+	path = 9/FlappyBirdInJack
+	url = git@github.com:paudsu01/FlappyBirdInJack.git
