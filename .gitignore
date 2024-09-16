@@ -1,3 +1,5 @@
 **/.DS_Store
 **/*.swp
+9/*
+!9/FlappyBirdInJack/
 
