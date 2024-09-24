@@ -7,3 +7,6 @@
 [submodule "9/FlappyBirdInJack"]
 	path = 9/FlappyBirdInJack
 	url = git@github.com:paudsu01/FlappyBirdInJack.git
+[submodule "10/compilerXML"]
+	path = 10/compilerXML
+	url = git@github.com:paudsu01/nand2tetrisCompiler.git
