@@ -2,4 +2,7 @@
 **/*.swp
 9/*
 !9/FlappyBirdInJack/
-
+10/
+!10/compilerXML/
+11/
+!11/JACKCompiler
