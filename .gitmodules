@@ -10,3 +10,6 @@
 [submodule "10/compilerXML"]
 	path = 10/compilerXML
 	url = git@github.com:paudsu01/nand2tetrisCompiler.git
+[submodule "11/JACKCompiler"]
+	path = 11/JACKCompiler
+	url = git@github.com:paudsu01/nand2tetrisCompiler.git
