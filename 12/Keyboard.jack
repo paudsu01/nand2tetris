@@ -1,0 +1,83 @@
+class Keyboard {
+    static int NEW_LINE, NUMBER_0, NUMBER_9, PRINTABLE_START, PRINTABLE_END, MAX_SIZE;
+
+    function void init() {
+	let NEW_LINE = 128;
+	let NUMBER_0 = 48;
+	let NUMBER_9 = 57;
+	let PRINTABLE_START = 32;
+	let PRINTABLE_END = 95;
+	let MAX_SIZE = 64;
+	return;
+    } 
+
+    function char keyPressed() {
+	return Memory.peek(24576);
+    }
+
+    function char getChar(){
+
+	var int ascii_code;
+	while (Keyboard.keyPressed() = 0){
+		}
+	let ascii_code = Keyboard.keyPressed();
+
+	while (Keyboard.keyPressed() > 0){
+		}
+	return ascii_code;
+
+    }
+
+    function char readChar() {
+	var int ascii_code;
+	let ascii_code = Keyboard.getChar();
+
+	if ((ascii_code > (PRINTABLE_START-1)) & (ascii_code < (PRINTABLE_END-1))) {
+		do Output.printChar(ascii_code);
+	}
+
+	return ascii_code;
+    }
+
+    function String readLine(String message) {
+	var int ascii_code;
+	var String ret_string;
+
+	do Output.printString(message);
+
+	let ret_string = String.new(MAX_SIZE);
+	let ascii_code = Keyboard.readChar();
+
+	while (~(ascii_code = NEW_LINE)){
+
+		if (ret_string.length() < (MAX_SIZE+1)){
+			if (ascii_code = String.backSpace()){
+				do ret_string.eraseLastChar();
+				do Output.backSpace();
+			} else {
+				do ret_string.appendChar(ascii_code);
+			}
+		} else {
+			// String object full ; out of space
+			do Sys.error(MAX_SIZE);
+		}
+
+		let ascii_code = Keyboard.readChar();
+	}
+
+	do Output.println();
+	return ret_string;
+    }   
+
+    function int readInt(String message) {
+	
+	var String string_message;
+	var int ret_value;
+
+	let string_message = Keyboard.readLine(message);
+	let ret_value = string_message.intValue();
+	do string_message.dispose();
+
+	return ret_value;
+	}
+}

@@ -1,0 +1,46 @@
+class Sys {
+
+    function void init() {
+
+	do Memory.init();
+	do Math.init();
+	do Screen.init();
+	do Output.init();
+	do Keyboard.init();
+
+	do Main.main();
+	
+	do Sys.halt();
+	return;
+    }
+
+    function void halt() {
+	while (true) {}
+	return;
+    }
+
+    // duration in milliseconds
+    function void wait(int duration) {
+	
+	var int current_index1, current_index2;
+	let current_index1 = duration;
+
+	while (current_index1 > 0){
+		let current_index2 = 120;
+		while (current_index2 > 0){
+			do Math.sqrt(4000);
+			let current_index2 = current_index2 - 1;
+		}
+		let current_index1 = current_index1 - 1;
+	}
+	return;
+	
+    }
+
+    function void error(int errorCode) {
+	do Output.printString("ERR");
+	do Output.printInt(errorCode);
+	do Sys.halt();
+	return;
+    }
+}

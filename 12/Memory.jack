@@ -1,0 +1,75 @@
+class Memory {
+
+    static Array MEMORY_ARRAY;
+    static int START_NODE_ADDRESS;
+
+    function void init() {
+	let MEMORY_ARRAY = 0;
+
+	let START_NODE_ADDRESS = 2048;
+	do Memory.poke(START_NODE_ADDRESS, 14334);
+	do Memory.poke(START_NODE_ADDRESS + 1, 0);
+	return;
+    }
+
+    function int peek(int address) {
+	return MEMORY_ARRAY[address];
+    }
+
+    function void poke(int address, int value) {
+	let MEMORY_ARRAY[address] = value;
+	return;
+    }
+
+    function int alloc(int size) {
+	var int required_node, new_node_address;
+	if ((size < 0) | (size = 0)) {
+		// size must be positive
+		do Sys.error(5);
+	}
+
+	let required_node = Memory.get_free_node(START_NODE_ADDRESS, size);
+	if (required_node = 0) {
+		// memory overflow
+		do Sys.error(6);
+	} else {
+
+		let new_node_address = required_node + Memory.peek(required_node) - size;
+		do Memory.poke(new_node_address, size);
+		do Memory.poke(new_node_address + 1, 0);
+		do Memory.poke(required_node, Memory.peek(required_node) - size - 2);
+		
+	}
+	return new_node_address + 2;
+    }
+   
+    // gets address for a free node for a given size, returns 0 otherwise
+    function int get_free_node(int current_node, int size){
+
+	var int ret_address;
+	if (Memory.peek(current_node) > (size + 1)){
+		let ret_address = current_node;
+	}
+	else {
+		if (Memory.peek(current_node+1) = 0) {
+			// if no node return 0
+			let ret_address = 0;
+
+		} else {
+			// go to next node
+			let ret_address = Memory.get_free_node(Memory.peek(current_node+1), size);
+		}
+	}
+	return ret_address;
+     }
+
+    function void deAlloc(Array o) {
+	
+	var int old_start_node;
+	let old_start_node = START_NODE_ADDRESS;
+
+	let START_NODE_ADDRESS = o - 2;
+	do Memory.poke(START_NODE_ADDRESS + 1, old_start_node);
+	return;
+    }    
+}

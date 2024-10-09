@@ -1,0 +1,176 @@
+class Screen {
+
+    static boolean COLOR;
+    function void init() {
+	let COLOR = true;
+	return;
+    }
+
+    function void clearScreen() {
+	var int current_cell, ending_cell;
+	let current_cell = 0;
+	let ending_cell = 8191;
+
+	while (current_cell < (ending_cell + 1)){
+		do Memory.poke(current_cell + 16384, 0);
+		let current_cell = current_cell + 1;
+	}
+	return;
+    }
+
+    function void setColor(boolean b) {
+	// Black color is True, white is False
+	let COLOR = b;
+	return;
+    }
+
+    function int get_memory_cell(int x, int y){
+	return (32 * y + (x / 16)) + 16384;
+    }
+
+    function void drawPixel(int x, int y) {
+	var int memory_cell, position, current_value, new_value;
+	var Array two_to_power_array;
+	
+	// Illegal coordinates
+	if ((x > 511) | (y > 255)) {do Sys.error(7);}
+
+	let memory_cell = Screen.get_memory_cell(x, y);
+	let position = Math.remainder(x, 16);
+	let current_value = Memory.peek(memory_cell);
+	
+	if (COLOR){
+		let two_to_power_array = Math.getTwoToThePowersArray();
+		let new_value =	two_to_power_array[position] | current_value;
+
+		do Memory.poke(memory_cell, new_value);
+	} else {
+		let two_to_power_array = Math.getTwoToThePowersArray();
+		let new_value =	(~(two_to_power_array[position])) & current_value;
+
+		do Memory.poke(memory_cell, new_value);
+	}
+	return;
+    }
+
+
+    function void drawLine(int x1, int y1, int x2, int y2){
+	var int a,b, a_inc, b_inc, dy, dx, diff;
+	if ( x1 > x2){
+		do Screen.drawLine(x2, y2, x1, y1);
+	} else {
+		let dy = y2 - y1;
+		let dx = x2 - x1;
+		let a = 0;
+		let b = 0;
+		let diff = 0;
+		let a_inc = 1;
+		let b_inc = 1;
+		
+		if (dy = 0){ do Screen.drawHorizontalLine(x1,x2,y1);}
+		else {
+			if (dx = 0){ do Screen.drawVerticalLine(y1,y2,x1);}
+			else {
+				if (dy < 0) {let b_inc = -1;}
+				let dy = Math.abs(dy);
+				
+				while ((a < (dx+1)) & (Math.abs(b) < (dy+1))){
+					do Screen.drawPixel(x1 + a, y1 + b);
+					if (diff < 0) {
+						let a = a + a_inc;
+						let diff = diff + dy;
+					} else {
+						let b = b + b_inc;
+						let diff = diff - dx;
+					}
+				}
+			}
+		
+		}
+	}
+	return;
+    }
+
+    function void drawVerticalLine(int y1, int y2, int x){
+	
+	var int y, memory_cell, current_val, eval_value;
+	var Array two_to_the_power_array;
+	if (y1 > y2) {
+		do Screen.drawVerticalLine(y2, y1, x);
+	} else {
+		let y = y1;
+		let two_to_the_power_array = Math.getTwoToThePowersArray();
+		let memory_cell = Screen.get_memory_cell(x, y1);
+		let eval_value = two_to_the_power_array[Math.remainder(x, 16)];
+
+		while (y < (y2+1)){
+			
+			let current_val = Memory.peek(memory_cell);	
+			if (COLOR) {
+				do Memory.poke(memory_cell, eval_value | current_val);
+			} else {
+				do Memory.poke(memory_cell, ((~eval_value) & current_val));
+			}	
+
+			let y = y + 1;
+			let memory_cell = memory_cell + 32;
+		}
+	}
+	return;
+    }
+
+    function void drawHorizontalLine(int x1, int x2, int y){
+
+	var int x, position, memory_cell;
+	if (x1 > x2) {
+		do Screen.drawHorizontalLine(x2, x1, y);
+	} else {
+		let x = x1;
+
+		while (x < (x2 + 1)){
+			let position = Math.remainder(x, 16);
+			let memory_cell = Screen.get_memory_cell(x, y);
+
+			if ((position = 0) & (~(Screen.get_memory_cell(x2, y) = Screen.get_memory_cell(x1, y)))){
+				if (COLOR) { do Memory.poke(memory_cell, -1);}
+				else { do Memory.poke(memory_cell, 0);}
+				let x = x + 16;
+
+			} else {
+				do Screen.drawPixel(x, y);
+				let x = x + 1;
+			}
+		}	
+	}
+	return;
+    }
+
+    function void drawRectangle(int x1, int y1, int x2, int y2) {
+	var int smaller_x, bigger_x;
+
+	let smaller_x = Math.min(x1, x2);
+	let bigger_x = Math.max(x1, x2);
+
+	while (smaller_x < (bigger_x + 1)){
+		do Screen.drawVerticalLine(y1, y2, smaller_x);
+		let smaller_x = smaller_x + 1;
+	}
+	return;
+    }
+
+    function void drawCircle(int x, int y, int r) {
+	var int current_dx, half_length;
+	// r cannot be > 181
+	if (r > 181) {do Sys.error(13);}
+
+	let current_dx = -r;
+	while (current_dx < (r+1)){
+
+		let half_length = Math.sqrt((r *r) - (current_dx * current_dx));
+		do Screen.drawVerticalLine(y - half_length, y + half_length, x + current_dx);
+		let current_dx = current_dx + 1;
+
+	}
+	return;
+    }
+}

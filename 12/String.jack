@@ -1,0 +1,133 @@
+class String {
+
+    field int current_length;
+    field Array characters_array;
+    field int max_length;
+
+    constructor String new(int maxLength) {
+
+	if (~(maxLength = 0)){
+		let characters_array = Array.new(maxLength);
+	}
+	let max_length = maxLength;
+	let current_length = 0;
+	return this;
+
+    }
+
+    method void dispose() {
+	do Memory.deAlloc(this);
+	return;
+    }
+
+    method int length() {
+	return current_length;
+    }
+
+    method char charAt(int j) {
+	var char character;
+	if ((j > current_length) | (j = current_length)){
+		do Sys.error(15);
+	} else {
+		let character = characters_array[j];
+	}
+	return character;
+    }
+
+    method void setCharAt(int j, char c) {
+	if ((j > current_length) | (j = current_length)){
+		do Sys.error(16);
+	} else {
+		let characters_array[j] = c;
+	}
+	return;
+    }
+
+    method String appendChar(char c) {
+	if (current_length = max_length){
+		do Sys.error(17);
+	} else {
+		let characters_array[current_length] = c;
+		let current_length = current_length + 1;
+	}
+	return this;
+    }
+
+    method void eraseLastChar() {
+	
+	if (current_length = 0){
+		do Sys.error(18);
+	} else {
+		let current_length = current_length - 1;
+	}
+	return;
+    }
+
+    method int intValue() {
+	var int int_value, current_value, current_index;
+	var boolean neg_value;
+
+	let current_value = 0;
+	
+	while (current_index < current_length) {
+
+		let int_value = (charAt(current_index) - 48);
+
+		if ((int_value < 0) | (int_value > 9)){
+			if ((int_value = (-3)) & (current_index = 0)){
+				let neg_value = true;
+			} else {
+				do Sys.error(49);
+			}
+
+		} else {
+			let current_value = current_value * 10 + int_value;
+		}
+		let current_index = current_index + 1;
+	}
+
+	if (neg_value) {let current_value = -current_value;}
+	return current_value;
+    }
+
+
+    method void setInt(int val){
+	
+	if (val < 0){
+		do setIntPositive(-val, true);
+	} else{
+		do setIntPositive(val, false);
+	}
+	return;
+    }
+
+    method void setIntPositive(int val, boolean negative) {
+	var int lastDigit;
+	if (val > 9){
+		let lastDigit = val - ((val/10) * 10);
+		do setIntPositive(val / 10, negative);
+		do appendChar(lastDigit + 48);
+	} else {
+		let current_length = 0;
+		if (negative) { 
+			do appendChar(45);
+			do appendChar(val + 48);}
+		else {
+			do appendChar(val + 48);
+			}
+	}
+	return;
+    }
+
+    function char newLine() {
+	return 128;
+    }
+
+    function char backSpace() {
+	return 129;
+    }
+
+    function char doubleQuote() {
+	return 34;
+    }
+}
