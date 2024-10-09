@@ -13,3 +13,6 @@
 [submodule "11/JACKCompiler"]
 	path = 11/JACKCompiler
 	url = git@github.com:paudsu01/nand2tetrisCompiler.git
+[submodule "12/Jack-OS"]
+	path = 12/Jack-OS
+	url = git@github.com:paudsu01/JackOS.git
