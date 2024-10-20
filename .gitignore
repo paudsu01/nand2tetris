@@ -6,3 +6,8 @@
 !10/compilerXML/
 11/
 !11/JACKCompiler
+13/
+12/*Test/
+12/math_algos.py
+**/*.cmp
+**/*.tst
